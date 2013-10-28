@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link href="/evan/bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
+		<link href="/evan/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+		<link href="/evan/bootstrap/css/bootstrap-responsive.css" rel="stylesheet" media="screen">
+		<link href="/evan/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
+		<link href="/evan/jsGroup/formatting.css" rel="stylesheet" media="screen">
+		<meta charset=utf-8 />
+	<title>jsGroup</title>
+</head>
+<body>
+		<script src="http://code.jquery.com/jquery-latest.js"></script>
+		<script src="http://www.parsecdn.com/js/parse-1.2.2.min.js"></script>
+		<script src="/evan/bootstrap/js/bootstrap.min.js"></script>
+		<script src="/evan/jsGroup/group.js"></script>
+  <div class="navbar navbar-inverse">
+    <div class="navbar-inner">
+       <div class="container">
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+           <span class="icon-bar"></span>
+           <span class="icon-bar"></span>
+           <span class="icon-bar"></span>
+         </a>
+         <a class="brand" href="#">jsGroup</a>
+         <div class="nav-collapse collapse">
+           <ul class="nav">
+             <li class="active"><a href="#">Main</a></li>
+             <li><a href="#">Help</a></li>
+           </ul>
+         </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="container">
+    <div class="row">
+		<div class="alert alert-block alert-warning fade in">
+			<button type="button" class="close" data-dismiss="alert">x</button>
+			<h4 class="alert-heading">Limited functionality</h4>
+			<p>This version of jsGroup stems directly from the jsGroup beta.  It should have limited bugs,
+			but the jsGroup grouping algorithm is very rigid right now.  If you need more flexible options,
+			those capabilities will be added very soon.</p>
+		</div>
+      <div class="span6" id="settings">
+        <fieldset>
+          <legend>Settings</legend>
+          <!--Settings needed:
+              1. name for report generated
+              2. what's separating entries
+              3. what's separating rows
+              4. number "wanted" choices per person, if app.
+              5. max num. "no" choices person, if app.
+              6. data-->
+		<div class="alert alert-block alert-info fade in">
+			<button type="button" class="close" data-dismiss="alert">x</button>
+			<h4 class="alert-heading">Pairs only</h4>
+			<p>Due to limitations in the grouping algorithm, all groups will be groups of 2.  This limit will be removed very soon.</p>
+		</div>
+          <label for="report-name">Enter a name for the results report that jsGroup will generate</label>
+          <input type="text" id="report-name" placeholder="Enter a report name..." />
+          
+          <label for="data-sep">What's separating the <strong>items in a row</strong> of data?</label>
+          <input type="text" id="data-sep" />
+          
+          <label for="row-sep">What's separating the <strong>rows of data</strong>?</label>
+          <input type="text" id="row-sep" placeholder="Leave blank if just a new line"/>
+          
+          <label for="max-choices">How many preferences can each person have?</label>
+          <input type="text" disabled placeholder="Feature unavailable" id="max-choices" />
+		  <div class="alert alert-error fade in">
+			<button type="button" class="close" data-dismiss="alert">x</button>
+			<strong>Feature unavailable</strong>  The jsGroup algorithm currently assumes 3 preferences per person.  This limitation will be removed very soon.
+		</div>
+		  
+		  <label for="anyone-okay-phrase">What is the phrase indicating that a person is okay with being grouped with anyone?</label>
+          <input type="text" id="anyone-okay-phrase" />
+		  <span class="help-block">Leave this blank if this is not applicable to your data.</span>
+          
+          <label for="max-cannot-haves">What is the most number of people a person can say he or she cannot be in a group with?</label>
+          <input type="text" id="max-cannot-haves" />
+          <span class="help-block">Enter 0 if this is not applicable to your data.</span>
+		  <br />
+		  <label for="data">Paste your data in the below text area.</label>
+          <textarea rows="10" id="data"></textarea>      
+          <br />
+          <button onclick="makeGroups()" class="btn btn-large btn-primary">Submit</button>
+     
+        </fieldset>
+      </div>
+      <div class="span6" id="results">
+        <fieldset>
+          <legend>Results</legend>
+        </fieldset>
+		<div id="groups">
+		</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
