@@ -216,7 +216,7 @@ function makeGroups() {
             $('#groups').append('<div id="group' + groups[i].id + '"><strong>Group ' + groups[i].id + ':</strong><br />Person 1: ' + groups[i].person1 + '<br />Person 2: ' + groups[i].person2 + '</div>');
         }
     }
-//for debughing purposes
+//for debugging purposes
     console.log(rowData);
     console.log(toAdd);
     console.log(goodData);
