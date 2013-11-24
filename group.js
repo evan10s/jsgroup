@@ -1,6 +1,6 @@
 //jsGroup grouping algorithm
-//Build date: 10:28 pm, 10/31/2013.  Evan Strat
-//Version: 0.1.1 beta
+//Build date: 9:57 pm, 10/27/2013.  Evan Strat
+//Version: 0.1 beta
 
 function Person(name, wants1, wants2, wants3, cannotHaves) {
 //Consider changing wants to an array in a future version
@@ -87,9 +87,8 @@ function makeGroups() {
             wants3 = goodData[i][4];
         }
         cannotHaves = goodData[i][5];
-        personToAdd = createPerson(name, wants1, wants2, wants3, "[" + cannotHaves + "]");
+        personToAdd = createPerson(name, wants1, wants2, wants3, cannotHaves);
         people.push(personToAdd);
-        console.log("Cannot haves:" + cannotHaves);
     }
 
     //Create groups
@@ -183,7 +182,7 @@ function makeGroups() {
     if (people.length % 2 === 0) {
 		console.log("even");
         peopleLength = people.length / 2;
-        for (i = 0; i < peopleLength; i++) {
+        for (i = 0; i < people.length / 2; i++) {
             people[i].name += "*";
             people[i + 1].name += "*";
             console.log(people[i].name + "  -  " + people[i + 1].name);
@@ -194,7 +193,7 @@ function makeGroups() {
             id++; //Increment the group id for the next group that will be created
         }
     } else {//There is an odd number of people.  Create groups of 2 has normal and then create a group of one for the remaining person.
-        console.log("odd");
+		console.log("odd");
         for (i = 0; i < (people.length - 1) / 2 ; i++) {
             groups.push(createGroup(id, people[i].name, people[i + 1].name)); //Create a new group
             people.splice(i, 1); //Remove person from people, so he/she will not be put into two different groups
@@ -202,7 +201,7 @@ function makeGroups() {
             //The two duplicate commands are not a mistake because after the first person is removed from people, the second person will then be at position i in people.
             id++; //Increment the group id for the next group that will be created
         }
-        groups.push(createGroup(id, people[0].name, "None"));
+		groups.push(createGroup(id, people[0].name, "None"));
     }
     //Give the groups
     $('#groups').empty(); //Get rid of previous results, if any
@@ -211,13 +210,13 @@ function makeGroups() {
         console.error("Grouping failed");
     } else if (groups.length === 1) {
         $('#groups').append('<h3>' + reportName + '<div><strong>1 group created.</strong></div>');
-        $('#groups').append('<div id="group' + groups[0].id + '"><strong>Group ' + groups[0].id + ':</strong><br />Person 1: ' + groups[0].person1 + '<br />Person 2: ' + groups[0].person2 + '</div>');
     } else {
         $('#groups').append('<h3>' + reportName + '<div><strong>' + groups.length +  ' groups created.</strong></div>');
         for (i = 0; i < groups.length; i++) {
             $('#groups').append('<div id="group' + groups[i].id + '"><strong>Group ' + groups[i].id + ':</strong><br />Person 1: ' + groups[i].person1 + '<br />Person 2: ' + groups[i].person2 + '</div>');
         }
     }
+//for debugging purposes
     console.log(rowData);
     console.log(toAdd);
     console.log(goodData);
