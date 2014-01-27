@@ -192,7 +192,7 @@ function makeGroups() {
             //The two duplicate commands are not a mistake because after the first person is removed from people, the second person will then be at position i in people.
             id++; //Increment the group id for the next group that will be created
         }
-    } else {//There is an odd number of people.  Create groups of 2 has normal and then create a group of one for the remaining person.
+    } else {//There is an odd number of people.  Create groups of 2 as normal and then create a group of one for the remaining person.
 		console.log("odd");
         for (i = 0; i < (people.length - 1) / 2 ; i++) {
             groups.push(createGroup(id, people[i].name, people[i + 1].name)); //Create a new group
