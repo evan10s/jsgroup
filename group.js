@@ -215,6 +215,7 @@ function makeGroups() {
         for (i = 0; i < groups.length; i++) {
             $('#groups').append('<div id="group' + groups[i].id + '"><strong>Group ' + groups[i].id + ':</strong><br />Person 1: ' + groups[i].person1 + '<br />Person 2: ' + groups[i].person2 + '</div>');
         }
+		$('#groups').append('<br />*This person:<ul><li>indicated that he or she is okay with anyone,</li><li>had no choices that could be fulfilled, or</li><li>had a first or second choice that could not be filled and said that anyone is okay for his or her second and/or third choice</li></ul>'); //explain what the asterisk means
     }
 //for debugging purposes
     console.log(rowData);
