@@ -1,6 +1,6 @@
 //jsGroup grouping algorithm
-//Build date: 9:57 pm, 10/27/2013.  Evan Strat
-//Version: 0.1 beta
+//Build date: unknown time, 1/29/2014.  Evan Strat
+//Version: 0.1.3-beta
 
 function Person(name, wants1, wants2, wants3, cannotHaves) {
 //Consider changing wants to an array in a future version
