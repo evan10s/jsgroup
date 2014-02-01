@@ -171,7 +171,7 @@ function makeGroups() {
         }
         //No else statement is needed because the person either has requests or can be processed at the end.
     }
-    //Make groups with remaining people who are okay with anyone (anyone still in people)
+    //Make groups with remaining people who are still in the people array (any person who is okay with anyone or whose choices could not be fulfilled)
     if (people.length % 2 === 0) {
         peopleLength = people.length / 2;
         for (i = 0; i < people.length / 2; i++) {
