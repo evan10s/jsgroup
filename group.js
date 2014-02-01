@@ -1,5 +1,5 @@
 //jsGroup grouping algorithm
-//Build date: unknown time, 1/29/2014.  Evan Strat
+//Build date: 12:22 pm, 1-Feb-2014.  Evan Strat
 //Version: 0.1.3-beta
 
 function Person(name, wants1, wants2, wants3, cannotHaves) {
@@ -97,12 +97,10 @@ function makeGroups() {
         choice1 = people[i].wants1;
         choice2 = people[i].wants2;
         choice3 = people[i].wants3;
-        console.log(people.length);
         //Go through people until wants1 is found.  Then, check to see if that person's wants1 is this person.  If so, create a group.  Otherwise, check to see if wants2 has this person as his or her wants1.
         //If so, create a group with that person.  Do this until a match is found.  If no match is found, add to noMatches and process at the end. 
         for (j = 0; j < people.length; j++) { //This is not the best way to do this.  In the future this will be modified to accomdate an unlimited number of wants (possible once wants is an array).
             if (people[j].name === choice1 && people[j].wants1 === 'anyone') { //Check if wants1 is okay with anyone.  If so, create the group.
-                console.log(people[j].name + "* -1- " + person);
                 groups.push(createGroup(id, person, people[j].name)); //Create a new group
                 if (i < j) { //If i is less than j...
                 //...then subtract one from j when removing the people added to the group from people, so that the correct person will be removed from people
@@ -115,7 +113,6 @@ function makeGroups() {
                 id++; //Increment the group id for the next group that will be created
             } else if (people[j].name === choice1 && people[j].wants1 === person) { //If the people[j] is person's first choice and person is people[j]'s first choice...
                 //To be turned into a function in the future
-                console.log(people[j].name + " -1- " + person);
                 groups.push(createGroup(id, person, people[j].name)); //Create a new group
                 if (i < j) { //If i is less than j...
                 //...then subtract one from j when removing the people added to the group from people, so that the correct person will be removed from people
@@ -127,7 +124,6 @@ function makeGroups() {
                 }
                 id++; //Increment the group id for the next group that will be created
             } else if (people[j].name === choice2 && people[j].wants2 === 'anyone') { //Check if wants2 is okay with anyone.  If so, create the group.
-                console.log(people[j].name + "* -2- " + person);
                 groups.push(createGroup(id, person, people[j].name)); //Create a new group
                 if (i < j) { //If i is less than j...
                 //...then subtract one from j when removing the people added to the group from people, so that the correct person will be removed from people
@@ -139,7 +135,6 @@ function makeGroups() {
                 }
                 id++; //Increment the group id for the next group that will be created
             } else if (people[j].name === choice2 && people[j].wants1 === person) { //If the people[j] is person's second choice and person is people[j]'s first choice...
-                console.log(people[j].name + " -2- " + person);
                 groups.push(createGroup(id, person, people[j].name)); //Create a new group
                 if (i < j) { //If i is less than j...
                 //...then subtract one from j when removing the people added to the group from people, so that the correct person will be removed from people
@@ -151,7 +146,6 @@ function makeGroups() {
                 }
                 id++; //Increment the group id for the next group that will be created
             } else if (people[j].name === choice3 && people[j].wants3 === 'anyone') {//Check if wants3 is okay with anyone.  If so, create the group.
-                console.log(people[j].name + "* -3- " + person);
                 groups.push(createGroup(id, person, people[j].name)); //Create a new group
                 if (i < j) { //If i is less than j...
                 //...then subtract one from j when removing the people added to the group from people, so that the correct person will be removed from people
@@ -163,7 +157,6 @@ function makeGroups() {
                 }
                 id++; //Increment the group id for the next group that will be created
             } else if (people[j].name === choice3 && people[j].wants1 === person) { //If the people[j] is person's third choice and person is people[j]'s first choice...
-                console.log(people[j].name + " -3- " + person);
                 groups.push(createGroup(id, person, people[j].name)); //Create a new group
                 if (i < j) { //If i is less than j...
                 //...then subtract one from j when removing the people added to the group from people, so that the correct person will be removed from people
@@ -180,12 +173,10 @@ function makeGroups() {
     }
     //Make groups with remaining people who are okay with anyone (anyone still in people)
     if (people.length % 2 === 0) {
-		console.log("even");
         peopleLength = people.length / 2;
         for (i = 0; i < people.length / 2; i++) {
             people[i].name += "*";
             people[i + 1].name += "*";
-            console.log(people[i].name + "  -  " + people[i + 1].name);
             groups.push(createGroup(id, people[i].name, people[i + 1].name)); //Create a new group
             people.splice(i, 1); //Remove person from people, so he/she will not be put into two different groups
             people.splice(i, 1); //Remove the second member of the new group from people, so he/she will not be put into two different groups
@@ -193,7 +184,6 @@ function makeGroups() {
             id++; //Increment the group id for the next group that will be created
         }
     } else {//There is an odd number of people.  Create groups of 2 as normal and then create a group of one for the remaining person.
-		console.log("odd");
         for (i = 0; i < (people.length - 1) / 2 ; i++) {
             groups.push(createGroup(id, people[i].name, people[i + 1].name)); //Create a new group
             people.splice(i, 1); //Remove person from people, so he/she will not be put into two different groups
@@ -207,7 +197,6 @@ function makeGroups() {
     $('#groups').empty(); //Get rid of previous results, if any
     if (groups.length === 0) { //Error: grouping failed.  No groups were created.
         $('#groups').append('<h3>' + reportName + '</h3><div class="alert alert-block alert-warning fade in"><h4 class="alert-heading">Grouping failed</h4><p>jsGroup was unable to create any groups.  Please check your settings and try again.</p></div>');
-        console.error("Grouping failed");
     } else if (groups.length === 1) {
         $('#groups').append('<h3>' + reportName + '<div><strong>1 group created.</strong></div>');
     } else {
@@ -217,10 +206,4 @@ function makeGroups() {
         }
 		$('#groups').append('<br />*This person:<ul><li>indicated that he or she is okay with anyone,</li><li>had no choices that could be fulfilled, or</li><li>had a first or second choice that could not be filled and said that anyone is okay for his or her second and/or third choice</li></ul>'); //explain what the asterisk means
     }
-//for debugging purposes
-    console.log(rowData);
-    console.log(toAdd);
-    console.log(goodData);
-    console.log(people);
-    console.log(groups);
 }
