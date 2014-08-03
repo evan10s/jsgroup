@@ -79,6 +79,7 @@ function makeGroups() {
         i,
         j,
         k;
+    if(dataToProcess !== "") {
     console.log("Rows length: " + rows.length);
     console.log(maxChoices);
     console.log((maxChoices + 2));
@@ -379,8 +380,7 @@ function makeGroups() {
         groups.push(createGroup(id, person1, "None"));
         console.log("Group " + id + " - Person 1: " + person1 + " - Person 2: None");
         people.splice(0,1);*/
-
-    
+    }
     //Output the groups
     $('#groups').empty(); //Get rid of previous results, if any
     if (groups.length === 0) {
