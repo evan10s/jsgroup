@@ -228,7 +228,7 @@ function makeGroups() {
             groups.push(createGroup(groups.length + 1, person1.name + "*", person2.name + "*")); //groupa.length + 1 is needed to get the correct group ID number; since the gruop has not been added to groups yet, we need to add 1 to the length of groups
             people.splice(i + 1, 1);
             people.splice(i, 1);
-            console.log("Group " + groups.length + "Person 1: " + person1.name + ", Person 2: " + person2.name + " *No choices for these people could be fulfilled"); //here, we only need groups.length because the group has already been added to groups
+            console.log("Group " + groups.length + " - Person 1: " + person1.name + ", Person 2: " + person2.name + " *No choices for these people could be fulfilled"); //here, we only need groups.length because the group has already been added to groups
         }
         else {
             for (j = 0; j < people.length; j++) { //see if there are any other people who will work with this person (both person1 and the other person are okay with each other)
@@ -241,7 +241,7 @@ function makeGroups() {
                     groups.push(createGroup(groups.length + 1, person1.name + "*", person2.name + "*"));
                     people.splice(j, 1);
                     people.splice(i, 1);
-                    console.log("Group " + groups.length + "Person 1: " + person1 + ", Person 2: " + person2 + " *No choices for these people could be fulfilled");
+                    console.log("Group " + groups.length + " - Person 1: " + person1 + ", Person 2: " + person2 + " *No choices for these people could be fulfilled");
                     break; 
                 }
             }
@@ -255,14 +255,14 @@ function makeGroups() {
     if(people.length >= 2) {
         for (i = 0; i < people.length - 1; i + 2) { //make groups with anyone else in people; only go to the second to last person in people to prevent an index from being out of bounds if there is an odd number of people in people
             groups.push(createGroup(groups.length + 1, people[i].name + "*", people[i + 1].name + "*"));
-            console.log("Group " + groups.length + "Person 1: " + person1 + ", Person 2: " + person2 + " *No choices for these people could be fulfilled");
+            console.log("Group " + groups.length + " - Person 1: " + person1 + ", Person 2: " + person2 + " *No choices for these people could be fulfilled");
             people.splice(i + 1, 1);
             people.splice(i, 1);
         }
     }
     if (people.length === 1) { //if there is just one person left in people or there was an odd number of people in people, create a group with the remaining person
-        groups.push(createGroup(groups.length + 1, people[0].name + "*", "None"));
-        console.log("Group " + groups.length + "Person 1: " + people[0].name + ", Person 2: None *No choices for this person could be fulfilled");
+        groups.push(createGroup(groups.length + 1, people[0].name + "*", "<em>None</em>"));
+        console.log("Group " + groups.length + " - Person 1: " + people[0].name + ", Person 2: None *No choices for this person could be fulfilled");
         people.splice(0,1);
     }
     
@@ -384,11 +384,11 @@ function makeGroups() {
     //Output the groups
     $('#groups').empty(); //Get rid of previous results, if any
     if (groups.length === 0) {
-        $('#groups').append('<h3>' + reportName + '</h3><div class="alert alert-block alert-danger fade in"><h4 class="alert-heading">Grouping failed</h4><p>jsGroup was unable to create any groups.  Please check your settings and try again.</p></div>');
+        $('#groups').append('<h3 id="results-report-name">' + reportName + '</h3><div class="alert alert-block alert-danger fade in"><h4 class="alert-heading">Grouping failed</h4><p>jsGroup was unable to create any groups.  Please check your settings and try again.</p></div>');
     } else if (groups.length === 1) {
-        $('#groups').append('<h3>' + reportName + '<div><strong>1 group created.</strong></div>' + '"><strong>Group ' + groups[0].id + ':</strong><br />Person 1: ' + groups[0].person1 + '<br />Person 2: ' + groups[0].person2 + '</div>');
+        $('#groups').append('<h3 id="results-report-name"><strong>' + reportName + '</strong><div>1 group created.</div></h3>' + '<strong>Group ' + groups[0].id + ':</strong><br />Person 1: ' + groups[0].person1 + '<br />Person 2: ' + groups[0].person2 + '</div>');
     } else {
-        $('#groups').append('<h3>' + reportName + '<div><strong>' + groups.length +  ' groups created.</strong></div>');
+        $('#groups').append('<h3 id="results-report-name"><strong>' + reportName + '</strong><div>' + groups.length +  ' groups created.</div></h3>');
         for (i = 0; i < groups.length; i++) {
             $('#groups').append('<div id="group' + groups[i].id + '"><strong>Group ' + groups[i].id + ':</strong><br />Person 1: ' + groups[i].person1 + '<br />Person 2: ' + groups[i].person2 + '</div>');
         }
