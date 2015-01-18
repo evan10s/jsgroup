@@ -241,17 +241,17 @@ function makeGroups() {
                     if (checkMutualCompat(person1, people[j]) && i !== j) { //if the two people are okay with each other, and they are not the same person (same index in people)
                         //make a group
                         console.log("j should not equal i.  i = " + i + " and j = " + j);
-                        console.log(people[j] + " should be the second person in the next group");
+                        console.log(people[j].name + " should be the second person in the next group");
                         match = true;
                         person2 = people[j];
                         groups.push(createGroup(groups.length + 1, person1.name + "*", person2.name + "*"));
                         people.splice(j, 1);
                         people.splice(i, 1);
-                        console.log("Group " + groups.length + " - Person 1: " + person1 + ", Person 2: " + person2 + " *No choices for these people could be fulfilled");
+                        console.log("Group " + groups.length + " - Person 1: " + person1.name + ", Person 2: " + person2.name + " *No choices for these people could be fulfilled");
                         break;
                     }
                 }
-                console.log("Person1 (" + person1 + ") and person2 (" + person2 + ") were not compatible");
+                console.log("Person1 (" + person1.name + ") and person2 (" + person2.name + ") were not compatible");
             }
             if (!match)
                 i++;
@@ -261,7 +261,7 @@ function makeGroups() {
         if (people.length >= 2) {
             for (i = 0; i < people.length - 1; i + 2) { //make groups with anyone else in people; only go to the second to last person in people to prevent an index from being out of bounds if there is an odd number of people in people
                 groups.push(createGroup(groups.length + 1, people[i].name + "*", people[i + 1].name + "*"));
-                console.log("Group " + groups.length + " - Person 1: " + person1 + ", Person 2: " + person2 + " *No choices for these people could be fulfilled");
+                console.log("Group " + groups.length + " - Person 1: " + person1.name + ", Person 2: " + person2.name + " *No choices for these people could be fulfilled");
                 people.splice(i + 1, 1);
                 people.splice(i, 1);
             }
