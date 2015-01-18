@@ -232,7 +232,7 @@ function makeGroups() {
             if (checkMutualCompat(person1, person2)) {
                 //make a group
                 match = true;
-                groups.push(createGroup(groups.length + 1, person1.name + "*", person2.name + "*")); //groupa.length + 1 is needed to get the correct group ID number; since the gruop has not been added to groups yet, we need to add 1 to the length of groups
+                groups.push(createGroup(groups.length + 1, person1.name + "*", person2.name + "*")); //groups.length + 1 is needed to get the correct group ID number; since the gruop has not been added to groups yet, we need to add 1 to the length of groups
                 people.splice(i + 1, 1);
                 people.splice(i, 1);
                 console.log("Group " + groups.length + " - Person 1: " + person1.name + ", Person 2: " + person2.name + " *No choices for these people could be fulfilled"); //here, we only need groups.length because the group has already been added to groups
