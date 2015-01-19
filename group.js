@@ -1,32 +1,36 @@
 //jsGroup grouping algorithm
-//Build date: 10:31 pm, 4-Aug-2014.  Evan Strat
-//Version: v0.2-beta
+//Build date: 10:35 pm, 16-Jan-2015.  Evan Strat
+//Version: v0.2.1-beta
 
 function Person(name, wants, cannotHaves) {
     "use strict";
     this.name = name;
     this.wants = wants;
     this.cannotHaves = cannotHaves;
+    this.anyoneOkay = false; //can be set to true: 1) during data parsing if the first choice indicates this, or 2) during grouping if a choice besides the first choice is anyone and there are no matches for the first two choices
+    this.noChoicesFulfilled = false; //if true, during grouping, someone can be put in a group with this person if that person is any of this person's wants (not just the first want)
     this.okayWith = function (person) {
-        var isOkay = true;
+        var isOkay = true,
         //check the person's cannotHaves
-        var cannotHaves = person.cannotHaves;
-        for (var i = 0; i < cannotHaves.length; i++) {
-            if (cannotHaves[i] === this.name) {
-                isOkay = false;
+            cannotHaves = person.cannotHaves;
+        if (cannotHaves.length === 0) { //don't loop through an empty cannotHaves array
+            return isOkay;
+        } else {
+            for (var i = 0; i < cannotHaves.length; i++) {
+                if (cannotHaves[i] === this.name) {
+                    isOkay = false;
+                }
             }
+            return isOkay;
         }
-        return isOkay;
     };
 }
 
-function checkMutualCompat (person1, person2) { //check if two people are okay with each other
+function checkMutualCompat(person1, person2) { //check if two people are okay with each other
     "use strict";
-    if(person1.okayWith(person2) && person2.okayWith(person1))
-    {
+    if (person1.okayWith(person2) && person2.okayWith(person1)) {
         return true;
-    }
-    else
+    } else
         return false;
 }
 
@@ -56,7 +60,7 @@ function makeGroups() {
         people = [],
         groups = [],
         id = 1, //Used for labeling groups
-    //Below: self-created method to get the data organized into a 2D array.  
+        //Below: self-created method to get the data organized into a 2D array.  
         goodData = [],
         dataToProcess = $('#data').val(),
         rows = dataToProcess.split(/\n/g), //Take the unprocessed data and make each row an item in the goodData array
@@ -67,7 +71,7 @@ function makeGroups() {
         cannotHaves = [],
         name,
         person,
-        wants = [],  //array for peoples wants
+        wants = [], //array for peoples wants
         personToAdd,
         peopleLength,
         match,
@@ -75,12 +79,13 @@ function makeGroups() {
         skip,
         person1,
         person2,
+        createGroupOK = false,
         //personWants = [],
         i,
         j,
         k;
-    
-    if(dataToProcess !== "") {
+
+    if (dataToProcess !== "") {
         console.log("Rows length: " + rows.length);
         console.log(maxChoices);
         console.log((maxChoices + 2));
@@ -96,7 +101,7 @@ function makeGroups() {
         for (i = 0; i < goodData.length; i++) { //loop through each row and create Person objects
             /*How the array of a row should look:
             0-1: name
-            2 - (maxChoices + 1): choices
+            2 through (maxChoices + 1): choices
             (maxChoices + 2): array of cannotHaves
             */
             name = goodData[i][0] + " " + goodData[i][1]; //set the person's name
@@ -139,7 +144,7 @@ function makeGroups() {
             wants = [];
             rawCannotHaves = "";
             cannotHaves = [];
-            }
+        }
         //create groups
         i = 0;
         while (i < people.length) { //use a while loop to loop through people to prevent issues with skipping people when a match is found and people are removed from people
@@ -149,71 +154,71 @@ function makeGroups() {
             if (people[i].wants[0] === "anyone") {
                 console.log(people[i].name + " is okay with anyone.  Skipping.  Person " + i);
                 skip = true;
-                i++; //increment i since no one is being removed from people; needed to prevent an infinite loop from occurring
+                i++; //increment i since no one is being removed from people; prevents an infinite loop
                 console.log("No match found or the person was marked as skip; incrementing i.  i is now " + i);
-            }
-            else { //search for a match
-                for (j = 0; j < people[i].wants.length; j++) { //for each want that the person has (the data processing algorithm stops adding wants when there are no more people for wantsyyy
+            } else { //search for a match
+                
+                for (j = 0; j < people[i].wants.length; j++) { //for each want that the person has (the data processing algorithm stops adding wants when there are no more people for wants)
+                    if (people[i].wants[j] === "anyone") {
+                        people[j].anyoneOkay = true;
+                        console.log("anyone okay marked true for " + name);
+                        skip = true;
+                        console.log("At want " + j + ", " + name + "'s choices had not been fulfilled and " + name + " indicated that he or she is okay with anyone.  Skipping to next person.  Person " + i);
+                        break;
+                    }
                     for (k = 0; k < people.length; k++) { //for each person in people
                         //if people[k].name = people[i].name, skip
                         if (name !== people[k].name) {
-                            if (people[i].wants[j] === "anyone") {
-                                skip = true;
-                                console.log("At want " + j + ", " + name + "'s choices had not been fulfilled and " + name + " indicated that he or she is okay with anyone.  Skipping to next person.  Person " + i);
-                                break;
-                            }
-                            else {
-                                console.log(name + " - should be the same - " + people[k].wants[0]); 
-                                if (name === people[k].wants[0] && people[i].wants[j] === people[k].name) {//if the person being looked at (people[k])'s first choice is this person, make the group
-                                    console.log("Debug info: name: " + name + " - people[k].wants[0]: " + people[k].wants[0] + " - people[i].wants[j]: " + people[i].wants[j] + " - people[k].name: " + 
-                                        people[k].name);
-                                    match = true;
-                                    id = groups.length + 1;                                
-                                    groups.push(createGroup(id, name, people[k].name));
-                                    console.log("Group " + id + " - Person 1: " + name + " - Person 2: " + people[k].name);
-
-                                    if (i < k) {//if i comes before k in people
-                                        people.splice(k,1); //remove k from people first to prevent issues with i being removed first and moving everything in people up one index because it came before k in people
-                                        people.splice(i,1);
+                            console.log(name + " -current want: " + people[k].name + " - current want's first choice: " + people[k].wants[0] + "; people[k].noChoicesFulfilled = " + people[k].noChoicesFulfilled);
+                            if (people[i].wants[j] === people[k].name) { //is this person one of the current person's wants?
+                                if (people[k].wants[0] === name) { //if so, check compatibility: option 1 - this person is want's first choice
+                                    createGroupOK = true;
+                                    console.log("create group OK for " + name + "; type: x-1");
+                                } else if (people[k].anyoneOkay) { //check compatibility: option 2 - person's first choice is anyone (no other people to consider)
+                                    createGroupOK = true;
+                                    console.log("create group OK for " + name + "; type: x-_(anyone okay)");
+                                } else if (people[k].noChoicesFulfilled) { //check compatibility: option 3 - want has no choices fulfilled - check to see if this person is one of their wants or, since want has no other choices fulfilled, if any of want's later wants are "anyone" (because people in wants before "anyone" did not want this person (want))
+                                    console.log(people[k].name + " has noChoicesFulfilled = true; checking possibilities");
+                                    for (var l = 0; l < people[k].wants.length; l++) {
+                                        if (people[k].wants[l] === name || people[k].wants[l] === "anyone") {
+                                            createGroupOK = true;
+                                            console.log("create group OK for " + name + "type: x-x");
+                                            break;
+                                        }
                                     }
-                                    else { //if i comes after k in people
-                                        people.splice(i,1); //remove i from people first to prevent issues with k being removed first and moving everything in people up one index because it came before i in people
-                                        people.splice(k,1);
-                                    }
-                                    break; //stop looping through people
                                 }
-                                else if (people[i].wants[j] === people[k].name && people[k].wants[0] === "anyone") { //if this person's want is okay with anyone, create a group
-                                    console.log("Debug info: name: " + name + " - people[k].wants[0]: " + people[k].wants[0] + " - people[i].wants[j]: " + people[i].wants[j] + " - people[k].name: " + 
-                                        people[k].name + "method: match okay with anyone");
+
+                                if (createGroupOK) {
+                                    createGroupOK = false; //reset createGroupOK
+                                    console.log("Debug info: name: " + name + " - people[k].wants[0]: " + people[k].wants[0] + " - people[i].wants[j]: " + people[i].wants[j] + " - people[k].name: " + people[k].name);
                                     match = true;
-                                    id = groups.length + 1;                                
+                                    id = groups.length + 1;
                                     groups.push(createGroup(id, name, people[k].name));
                                     console.log("Group " + id + " - Person 1: " + name + " - Person 2: " + people[k].name);
 
-                                    if (i < k) {//if i comes before k in people
-                                        people.splice(k,1); //remove k from people first to prevent issues with i being removed first and moving everything in people up one index because it came before k in people
-                                        people.splice(i,1);
-                                    }
-                                    else { //if i comes after k in people
-                                        people.splice(i,1); //remove i from people first to prevent issues with k being removed first and moving everything in people up one index because it came before i in people
-                                        people.splice(k,1);
+                                    if (i < k) { //if i comes before k in people
+                                        people.splice(k, 1); //remove k from people first to prevent issues with i being removed first and moving everything in people up one index because it came before k in people
+                                        people.splice(i, 1);
+                                    } else { //if i comes after k in people
+                                        people.splice(i, 1); //remove i from people first to prevent issues with k being removed first and moving everything in people up one index because it came before i in people
+                                        people.splice(k, 1);
                                     }
                                     break; //stop looping through people
                                 }
                             }
-                        }
-                        else {
+                        } else {
                             console.log("Both people have the same name.  Moving on.");
                         }
                     }
 
-                    if (match || skip) {//if a match has been found or this person is okay with anyone at this point
+                    if (match || skip) { //if a match has been found or this person is okay with anyone at this point
                         break; //stop going through this person's wants
                     }
                 }
-                if(!match || skip) { //increment i only when no one is removed from people; that is, when there was no match or the person was skipped because they were okay with anyone
-                    i++;
-                    console.log("No match found or the person was marked as skip; incrementing i.  i is now " + i);
+                if (!match || skip) { //increment i only when no one is removed from people; that is, when there was no match or the person was skipped because they were okay with anyone
+                    console.log("No match found or the person was marked as skip.  noChoicesFulfilled now = true. Incrementing i.  i is now " + i);
+                    people[i].noChoicesFulfilled = true;
+                    i++; //need to increment i after marking noChoicesFulfilled so that it is applied to the right person
                 }
             }
         }
@@ -227,37 +232,36 @@ function makeGroups() {
             if (checkMutualCompat(person1, person2)) {
                 //make a group
                 match = true;
-                groups.push(createGroup(groups.length + 1, person1.name + "*", person2.name + "*")); //groupa.length + 1 is needed to get the correct group ID number; since the gruop has not been added to groups yet, we need to add 1 to the length of groups
+                groups.push(createGroup(groups.length + 1, person1.name + "*", person2.name + "*")); //groups.length + 1 is needed to get the correct group ID number; since the gruop has not been added to groups yet, we need to add 1 to the length of groups
                 people.splice(i + 1, 1);
                 people.splice(i, 1);
                 console.log("Group " + groups.length + " - Person 1: " + person1.name + ", Person 2: " + person2.name + " *No choices for these people could be fulfilled"); //here, we only need groups.length because the group has already been added to groups
-            }
-            else {
+            } else {
                 for (j = 0; j < people.length; j++) { //see if there are any other people who will work with this person (both person1 and the other person are okay with each other)
-                    if(checkMutualCompat(person1, people[j]) && i !== j) { //if the two people are okay with each other, and they are not the same person (same index in people)
-                       //make a group
+                    if (checkMutualCompat(person1, people[j]) && i !== j) { //if the two people are okay with each other, and they are not the same person (same index in people)
+                        //make a group
                         console.log("j should not equal i.  i = " + i + " and j = " + j);
-                        console.log(people[j] + " should be the second person in the next group");
+                        console.log(people[j].name + " should be the second person in the next group");
                         match = true;
                         person2 = people[j];
                         groups.push(createGroup(groups.length + 1, person1.name + "*", person2.name + "*"));
                         people.splice(j, 1);
                         people.splice(i, 1);
-                        console.log("Group " + groups.length + " - Person 1: " + person1 + ", Person 2: " + person2 + " *No choices for these people could be fulfilled");
-                        break; 
+                        console.log("Group " + groups.length + " - Person 1: " + person1.name + ", Person 2: " + person2.name + " *No choices for these people could be fulfilled");
+                        break;
                     }
                 }
-                console.log("Person1 (" + person1 + ") and person2 (" + person2 + ") were not compatible");
+                console.log("Person1 (" + person1.name + ") and person2 (" + person2.name + ") were not compatible");
             }
             if (!match)
                 i++;
             else
                 match = false;
         }
-        if(people.length >= 2) {
+        if (people.length >= 2) {
             for (i = 0; i < people.length - 1; i + 2) { //make groups with anyone else in people; only go to the second to last person in people to prevent an index from being out of bounds if there is an odd number of people in people
                 groups.push(createGroup(groups.length + 1, people[i].name + "*", people[i + 1].name + "*"));
-                console.log("Group " + groups.length + " - Person 1: " + person1 + ", Person 2: " + person2 + " *No choices for these people could be fulfilled");
+                console.log("Group " + groups.length + " - Person 1: " + person1.name + ", Person 2: " + person2.name + " *No choices for these people could be fulfilled");
                 people.splice(i + 1, 1);
                 people.splice(i, 1);
             }
@@ -265,7 +269,7 @@ function makeGroups() {
         if (people.length === 1) { //if there is just one person left in people or there was an odd number of people in people, create a group with the remaining person
             groups.push(createGroup(groups.length + 1, people[0].name + "*", "<em>None</em>"));
             console.log("Group " + groups.length + " - Person 1: " + people[0].name + ", Person 2: None *No choices for this person could be fulfilled");
-            people.splice(0,1);
+            people.splice(0, 1);
         }
 
         console.log("No one should be left in people. people.length = " + people.length);
@@ -376,13 +380,13 @@ function makeGroups() {
             }
         }*/
 
-            /*id = groups.length + 1;
+        /*id = groups.length + 1;
             person1 = people[0].name + "*";
             groups.push(createGroup(id, person1, "None"));
             console.log("Group " + id + " - Person 1: " + person1 + " - Person 2: None");
             people.splice(0,1);*/
     }
-    
+
     //Output the groups
     $('#groups').empty(); //Get rid of previous results, if any
     if (groups.length === 0) {
@@ -390,13 +394,13 @@ function makeGroups() {
     } else if (groups.length === 1) {
         $('#groups').append('<h3 id="results-report-name"><strong>' + reportName + '</strong><div>1 group created.</div></h3>' + '<strong>Group ' + groups[0].id + ':</strong><br />Person 1: ' + groups[0].person1 + '<br />Person 2: ' + groups[0].person2 + '</div>');
     } else {
-        $('#groups').append('<h3 id="results-report-name"><strong>' + reportName + '</strong><div>' + groups.length +  ' groups created.</div></h3>');
+        $('#groups').append('<h3 id="results-report-name"><strong>' + reportName + '</strong><div>' + groups.length + ' groups created.</div></h3>');
         for (i = 0; i < groups.length; i++) {
             $('#groups').append('<div id="group' + groups[i].id + '"><strong>Group ' + groups[i].id + ':</strong><br />Person 1: ' + groups[i].person1 + '<br />Person 2: ' + groups[i].person2 + '</div>');
         }
         $('#groups').append('<br />*This person:<ul><li>indicated that he or she is okay with anyone,</li><li>had no choices that could be fulfilled, or</li><li>said he or she is okay with anyone as a later choice and had no choices prior to that choice that could be fulfilled</li></ul>'); //explain what the asterisk means
     }
-    
+
     //old new method
     //Create groups
     /*for (i = 0; i < people.length; i++) { //For each person in people
@@ -472,8 +476,8 @@ function makeGroups() {
         console.log(rows[1]);
         console.log(rows[2]);
         console.log(rows[3]);*/
-        //below: old grouping method
-        /*person = people[i].name; //The name of the person being looked at
+    //below: old grouping method
+    /*person = people[i].name; //The name of the person being looked at
         choice1 = people[i].wants1;
         choice2 = people[i].wants2;
         choice3 = people[i].wants3;
@@ -548,5 +552,5 @@ function makeGroups() {
                 }
                 id++; //Increment the group id for the next group that will be created
             }*/
-        //No else statement is needed because the person either has requests or can be processed at the end.
+    //No else statement is needed because the person either has requests or can be processed at the end.
 }
