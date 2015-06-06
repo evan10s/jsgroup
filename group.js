@@ -1,6 +1,6 @@
 //jsGroup grouping algorithm
-//Build date: 10:35 pm, 16-Jan-2015.  Evan Strat
-//Version: v0.2.1-beta
+//Build date: 11:43 pm, 1-Jun-2015.  Evan Strat
+//Version: v0.2.2-beta
 
 function Person(name, wants, cannotHaves) {
     "use strict";
@@ -151,7 +151,7 @@ function makeGroups() {
             match = false;
             skip = false;
             name = people[i].name;
-            if (people[i].wants[0] === "anyone") {
+            if (people[i].anyoneOkay) {
                 console.log(people[i].name + " is okay with anyone.  Skipping.  Person " + i);
                 skip = true;
                 i++; //increment i since no one is being removed from people; prevents an infinite loop
@@ -160,7 +160,7 @@ function makeGroups() {
                 
                 for (j = 0; j < people[i].wants.length; j++) { //for each want that the person has (the data processing algorithm stops adding wants when there are no more people for wants)
                     if (people[i].wants[j] === "anyone") {
-                        people[j].anyoneOkay = true;
+                        people[i].anyoneOkay = true;
                         console.log("anyone okay marked true for " + name);
                         skip = true;
                         console.log("At want " + j + ", " + name + "'s choices had not been fulfilled and " + name + " indicated that he or she is okay with anyone.  Skipping to next person.  Person " + i);
@@ -171,12 +171,12 @@ function makeGroups() {
                         if (name !== people[k].name) {
                             console.log(name + " -current want: " + people[k].name + " - current want's first choice: " + people[k].wants[0] + "; people[k].noChoicesFulfilled = " + people[k].noChoicesFulfilled);
                             if (people[i].wants[j] === people[k].name) { //is this person one of the current person's wants?
-                                if (people[k].wants[0] === name) { //if so, check compatibility: option 1 - this person is want's first choice
-                                    createGroupOK = true;
-                                    console.log("create group OK for " + name + "; type: x-1");
-                                } else if (people[k].anyoneOkay) { //check compatibility: option 2 - person's first choice is anyone (no other people to consider)
+                               if (people[k].anyoneOkay) { //check compatibility: option 1 - person's first choice is okay with anyone (no other people to consider)
                                     createGroupOK = true;
                                     console.log("create group OK for " + name + "; type: x-_(anyone okay)");
+                                } else if (people[k].wants[0] === name) { //if so, check compatibility: option 2 - this person is want's first choice
+                                    createGroupOK = true;
+                                    console.log("create group OK for " + name + "; type: x-1");
                                 } else if (people[k].noChoicesFulfilled) { //check compatibility: option 3 - want has no choices fulfilled - check to see if this person is one of their wants or, since want has no other choices fulfilled, if any of want's later wants are "anyone" (because people in wants before "anyone" did not want this person (want))
                                     console.log(people[k].name + " has noChoicesFulfilled = true; checking possibilities");
                                     for (var l = 0; l < people[k].wants.length; l++) {
@@ -202,6 +202,7 @@ function makeGroups() {
                                     } else { //if i comes after k in people
                                         people.splice(i, 1); //remove i from people first to prevent issues with k being removed first and moving everything in people up one index because it came before i in people
                                         people.splice(k, 1);
+                                        i--; //really unsure about this
                                     }
                                     break; //stop looping through people
                                 }
