@@ -110,6 +110,7 @@ function makeGroups() {
                 if (goodData[i][j] === anyoneOkayPhrase) { //if person is okay with anyone...
                     wants.push("anyone"); //...note that they are okay with anyone
                     break; //...exit the for loop because there's no need to continue the loop since the person's choices after this point are irrelevant/nonexistent
+                    //TODO: if the first want is anyone, just set anyoneOkay to true
                 }
                 if (goodData[i][j] === "" || goodData[i][j] === " ") {
                     break; //This person has no more choices; stop processing wants
