@@ -11,7 +11,7 @@ Current features:
 
     
 Known limitations:
-- Only groups of two can be created.  (will change eventually)
+- Only groups of two can be created.  (this will change, sooner rather than later (as of 29-Aug-2015))
 
 The basic methodology:
 - The user submits a dataset and some information about it.
