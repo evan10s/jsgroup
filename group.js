@@ -1,5 +1,5 @@
 //jsGroup grouping algorithm
-//Build date: 11:43 pm, 1-Jun-2015.  Evan Strat
+//Build date: 11:31 pm, 29-Aug-2015.  Evan Strat
 //Version: v0.2.2-beta
 
 function Person(name, wants, cannotHaves) {
@@ -175,6 +175,7 @@ function makeGroups() {
                                if (people[k].anyoneOkay) { //check compatibility: option 1 - person's first choice is okay with anyone (no other people to consider)
                                     createGroupOK = true;
                                     console.log("create group OK for " + name + "; type: x-_(anyone okay)");
+                                   //TODO: Check requested person's cannotHaves to make sure that this person is not in them
                                 } else if (people[k].wants[0] === name) { //if so, check compatibility: option 2 - this person is want's first choice
                                     createGroupOK = true;
                                     console.log("create group OK for " + name + "; type: x-1");
