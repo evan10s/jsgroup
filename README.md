@@ -1,5 +1,7 @@
 jsGroup
 =======
+[![Codacy Badge](https://api.codacy.com/project/badge/eaf4d3c7d34843718aa83a3ccede033e)](https://www.codacy.com/app/evan-strat/jsgroup)
+
 jsGroup makes groups.
 
 Current features:
