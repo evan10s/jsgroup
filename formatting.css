@@ -1,11 +1,9 @@
 .form-control {
-	width: 50%; !important /*override Bootstrap's default input element width*/
+    width: 50%;
 }
-
 #bottom-submit {
     margin-bottom: 14px;
 }
-
-h3#results-report-name {
+#results-report-name {
     margin-top: 0;
 }
